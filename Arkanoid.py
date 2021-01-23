@@ -27,6 +27,7 @@ color_list = [
 ]
 
 pygame.init()
+font_end = pygame.font.SysFont("ArcadeClassic", 50, bold=True)
 clock = pygame.time.Clock()
 background = pygame.display.set_mode([RES, RES])
 background_img = pygame.image.load("background2.png").convert()
@@ -52,17 +53,13 @@ def detect_collision(dx, dy, ball, rect):
 
 
 def close_game():
-    exit()
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            exit()
 
 
 while True:
     background.blit(background_img, (0, 0))
-
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            exit()
-    background.blit(background_img, (0, 0))
-
     [
         pygame.draw.rect(background, color_list[color], block)
         for color, block in enumerate(block_list)
@@ -89,11 +86,11 @@ while True:
         fps += 2
 
     if ball.bottom > RES:
-        print("GAME OVER")
-        close_game()
-    elif not len(block_list):
-        print("WIN")
-        close_game()
+        while True:
+            render_end = font_end.render("GAME OVER", True, pygame.Color("lightgrey"))
+            background.blit(render_end, (RES // 2 - 125, RES // 2 - 100))
+            pygame.display.flip()
+            close_game()
 
     pygame.display.flip()
     clock.tick(fps)
@@ -103,5 +100,3 @@ while True:
         paddle.left -= paddle_speed
     if key[pygame.K_RIGHT] or key[pygame.K_w] and paddle.right < RES:
         paddle.right += paddle_speed
-
-
